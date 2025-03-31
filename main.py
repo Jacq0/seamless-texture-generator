@@ -15,22 +15,25 @@ dt = 0
 def xor(bool1, bool2):
     return (bool1 and not bool2) or (not bool1 and bool2)
 
-#draw rectangles with screen wrapping functionality
-def draw_rect(pos, size, colour):
-    rtangle = pygame.Rect(pos, size)
-    pygame.draw.rect(screen, colour, rtangle)
+def rect(pos, size, colour):
+    rect = pygame.Rect(pos, size)
+    pygame.draw.rect(screen, colour, rect)
 
-#draw a panel out of basic shapes (with wrapping)
-def draw_panel(pos, size, colour):
-    rtangle = pygame.Rect(pos, size)
+def ellipse(pos, size, colour):
+    rect = pygame.Rect(pos, size) 
+    pygame.draw.ellipse(screen, colour, rect)
+
+#draw a panel out of basic shapes
+def panel(pos, size, colour):
+    rect = pygame.Rect(pos, size)
 
     #check these for errors
     top_size = (size[0]-5, size[1]-5) 
     top_colour = (colour[0]-15, colour[0]-15, colour[0]-15)
 
-    rtangle_top = pygame.Rect(pos, top_size)
-    pygame.draw.rect(screen, colour, rtangle)
-    pygame.draw.rect(screen, top_colour, rtangle_top)
+    rect_top = pygame.Rect(pos, top_size)
+    pygame.draw.rect(screen, colour, rect)
+    pygame.draw.rect(screen, top_colour, rect_top)
 
     bolt_size = 3
     bolt_offset = 7
@@ -39,7 +42,6 @@ def draw_panel(pos, size, colour):
     pygame.draw.circle(screen, (150,150,150), (pos[0] + (top_size[0] - bolt_offset), pos[1] + bolt_offset), bolt_size)
     pygame.draw.circle(screen, (150,150,150), (pos[0] + bolt_offset, pos[1] + (top_size[1] - bolt_offset)), bolt_size)
     pygame.draw.circle(screen, (150,150,150), (pos[0] + (top_size[0] - bolt_offset), pos[1] + (top_size[1] - bolt_offset)), bolt_size)
-
 
 #will draw shapes wrapped
 def wrap_draw(to_draw, pos, size, dimensions, colour):
@@ -69,6 +71,11 @@ def wrap_draw(to_draw, pos, size, dimensions, colour):
         print("Redraw X-Y axes")
         to_draw((offset_X, offset_Y), size, colour)
 
+#draw a shape from given method, with wrapping
+def draw_shape(to_draw, pos, size, dimensions, colour):
+    to_draw(pos, size, colour)
+    wrap_draw(to_draw, pos, size, dimensions, colour)
+
 while running:
     #poll events
     for event in pygame.event.get():
@@ -87,11 +94,7 @@ while running:
         darkness = random.randrange(50, 150)
         random_col = (darkness,darkness,darkness)
 
-        #draw_rect(random_pos, (random_width,random_height), random_col)
-        #wrap_draw(draw_rect, random_pos, (random_width, random_height), (width,height), random_col)
-
-        draw_panel(random_pos, (random_width,random_height), random_col)
-        wrap_draw(draw_panel, random_pos, (random_width, random_height), (width,height), random_col)
+        draw_shape(panel, random_pos, (random_width, random_height), (width,height), random_col)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
